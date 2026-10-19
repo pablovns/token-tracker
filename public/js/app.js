@@ -1578,6 +1578,14 @@ function _formatActiveTime(minutes) {
   return m > 0 ? h + hUnit + ' ' + m + mUnit : h + hUnit;
 }
 
+function _formatElapsedTime(minutes) {
+  if (!Number.isFinite(minutes) || minutes <= 0) return minutes === 0 ? '0m' : '-';
+  if (minutes < 1440) return _formatDuration(minutes);
+  const days = Math.floor(minutes / 1440);
+  const hours = Math.floor((minutes % 1440) / 60);
+  return days + (currentLang === 'de' ? ' T.' : 'd') + (hours ? ' ' + hours + 'h' : '');
+}
+
 // --- Usage trends (now-anchored comparisons, independent of period filter) ---
 
 let _trendsData = null;
@@ -1641,13 +1649,15 @@ function _renderTrendCard(key, data, opts) {
   document.getElementById('trend-compare-' + key).textContent = opts.compareLabel;
   document.getElementById('trend-sub-' + key).textContent = opts.subLabel(prevFull, cur);
 
-  // Tooltip: messages + active time, both sides
+  // Tooltip: messages, active time, and elapsed span, both sides
   const card = document.getElementById('trend-card-' + key);
   if (card) {
     card.title = t('messagesLabel') + ': ' + formatNumber(data.current.messages) +
       ' (' + t('trendPrevShort') + ': ' + formatNumber(data.prevSame.messages) + ')\n' +
       t('trendActiveTime') + ': ' + _formatActiveTime(data.current.activeMin) +
-      ' (' + t('trendPrevShort') + ': ' + _formatActiveTime(data.prevSame.activeMin) + ')';
+      ' (' + t('trendPrevShort') + ': ' + _formatActiveTime(data.prevSame.activeMin) + ')\n' +
+      t('elapsedTimeLabel') + ': ' + _formatElapsedTime(data.current.spanMin) +
+      ' (' + t('trendPrevShort') + ': ' + _formatElapsedTime(data.prevSame.spanMin) + ')';
   }
 
   // Sparkline: shared y-max over both periods, in-place d update (no rebuild)
@@ -1906,6 +1916,7 @@ async function loadOverview() {
   document.getElementById('kpi-messages').textContent = formatNumber(overview.messages);
   document.getElementById('kpi-active-time').textContent = _formatActiveTime(overview.totalActiveMin);
   document.getElementById('kpi-active-time-sub').textContent = overview.totalActiveMin > 0 ? t('activeTimeSub') : '-';
+  document.getElementById('kpi-elapsed-time').textContent = _formatElapsedTime(overview.spanMin || 0);
   document.getElementById('kpi-rate-limits').textContent = formatNumber(overview.rateLimitHits || 0);
   document.getElementById('kpi-avg-active-time').textContent = _formatActiveTime(overview.avgActiveMinPerDay);
   document.getElementById('kpi-avg-active-time-sub').textContent = overview.activeDays > 0
@@ -2267,6 +2278,7 @@ async function openProjectDetail(projectName) {
     // Active time on one shared timeline — NOT the sum of session spans, which
     // counts idle time and overlapping sessions and exceeds the wall clock.
     { label: t('pdTotalTime'), value: data.totalActiveMin > 0 ? _formatDuration(data.totalActiveMin) : '-', cls: 'c-cyan', tip: t('mActiveD') },
+    { label: t('elapsedTimeLabel'), value: _formatElapsedTime(data.spanMin || 0), cls: 'c-cyan', tip: t('mElapsedD') },
     { label: t('pdNetLines'), value: _formatNetLines(data), cls: 'c-green', tip: t('mLinesD') },
   ];
   for (const k of kpis) {
@@ -2420,6 +2432,7 @@ function openMethodology() {
   body.appendChild(_methodologyRow(t('mMessagesH'), t('mMessagesD')));
   body.appendChild(_methodologyRow(t('mSessionsH'), t('mSessionsD')));
   body.appendChild(_methodologyRow(t('mActiveH'), t('mActiveD')));
+  body.appendChild(_methodologyRow(t('elapsedTimeLabel'), t('mElapsedD')));
   body.appendChild(_methodologyRow(t('mLinesH'), t('mLinesD')));
   body.appendChild(_methodologyRow(t('mPricingH'), t('mPricingD')));
   body.appendChild(_methodologyRow(t('mGapsH'), t('mGapsD')));

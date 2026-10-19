@@ -4,6 +4,18 @@ Alle nennenswerten Änderungen an diesem Projekt. Format lose nach
 [Keep a Changelog](https://keepachangelog.com/de/1.1.0/); Versionierung nach
 [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.10.1] — 2026-10-08
+
+### Fixed
+
+- Achievement-Arbeitszeit zählt parallele Sitzungen, Provider und Sub-Agenten
+  auf einer gemeinsamen Zeitachse nur einmal. Tageswerte werden an lokaler
+  Mitternacht geteilt; belegte Stunden stammen jetzt aus allen Nachrichten.
+- Übersicht, Projekt-Dialog, Trend-Hover und Projektbericht zeigen aktive Zeit
+  und erfasste Zeitspanne getrennt und erklären beide Berechnungen.
+- Bereits freigeschaltete Achievements bleiben erhalten; künftige Prüfungen
+  verwenden die korrigierten Werte.
+
 ## [0.10.0] — 2026-10-08
 
 ### Added

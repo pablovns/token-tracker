@@ -108,6 +108,23 @@ session plus its sub-agents, or a second terminal — share the timeline, so the
 same minute is never counted twice. The figure therefore can never exceed the
 wall-clock time that has actually elapsed.
 
+For daily achievement values, the same capped intervals are split at **local
+midnight**. A gap across midnight contributes to both dates; overlapping
+sessions, providers, and sub-agents still count once. Rounding is reconciled so
+the daily values add up to the overview's total active minutes. An individual
+session keeps its own `activeMin`; only totals across sessions use the shared
+timeline. `avgActiveMinPerSession` is therefore the average of individual
+session values, not the global total divided by the session count. One message
+alone contributes zero active minutes because no interval has elapsed.
+
+### Recorded time span
+
+The separately displayed **recorded time span** (`spanMin`) is the elapsed time
+between the first and last message in the selected period or project. It
+includes every break, including long periods without any use. It describes the
+range covered by the logs and is **not working time**. Trend cards show both
+values on hover. Session rows show each session's own span and active time.
+
 ### Why not session duration
 
 `durationMin` (last minus first message of a session) counts idle time as work
@@ -208,15 +225,14 @@ Eight wave-1 achievements were corrected in 2026-08 from **impossible** to hard:
 figure is 0.204 %, and `model_haiku_majority` demanded Haiku above half of all
 messages against 2.9 % actual. An unreachable badge is padding, not a goal.
 
-> ⚠️ **Open inconsistency (found 2026-10-08, not yet fixed):** the achievement
-> stats compute daily working time by **summing each session's active minutes
-> under its start date**. Parallel sessions are counted twice and multi-day
-> sessions land on one day — the measured maximum is **6,714 minutes for a
-> single day** (a day has 1,440). Affects `maxDayActiveMin` and the `deepDays_*`
-> achievements, probably also the total working hours. Whether the overview's
-> active time is inflated as well is still to be checked. Treat time-based
-> achievement numbers as upper bounds until this is resolved.
-> Details and the fix brief: [FIXME.md](../FIXME.md).
+On 2026-10-08 the achievement time stats were corrected to use the shared
+timeline. In the then-current database, `totalActiveHours` fell from 2,502.9 to
+1,275.9 hours and `maxDayActiveMin` from 6,714 to 1,018 minutes. The overview
+was independently recomputed from all 360,379 message timestamps and already
+matched at 76,552 active minutes. Four previously unlocked time achievements
+would be below their threshold under the new values; existing unlocks are kept,
+while future checks use the corrected metrics. The time thresholds themselves
+were not changed.
 
 **Progress on a locked achievement** (since 0.10.0) is `value / target` of its
 condition, read back out of the definition: wave 3 declares

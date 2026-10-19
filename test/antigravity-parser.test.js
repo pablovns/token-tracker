@@ -40,8 +40,12 @@ describe('antigravity-parser', () => {
 
   describe('extractAntigravityProjectName', () => {
     it('handles JSON array of file URIs', () => {
-      expect(extractAntigravityProjectName('["file:///Users/martin/claude/my-project"]')).toBe('claude/my-project');
-      expect(extractAntigravityProjectName('file:///Users/martin/Downloads/MaX3%203')).toBe('Downloads/MaX3 3');
+      // Built from the real home dir: the parser strips HOME, and a hard-coded
+      // /Users/martin only matched the developer's machine (CI runs /home/runner).
+      const { HOME } = require('../lib/config');
+      const fileUri = (rel) => 'file://' + encodeURI(path.posix.join(HOME.split(path.sep).join('/'), rel));
+      expect(extractAntigravityProjectName(JSON.stringify([fileUri('claude/my-project')]))).toBe('claude/my-project');
+      expect(extractAntigravityProjectName(fileUri('Downloads/MaX3 3'))).toBe('Downloads/MaX3 3');
       expect(extractAntigravityProjectName(null)).toBe('default');
     });
   });

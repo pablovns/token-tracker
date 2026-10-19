@@ -43,6 +43,7 @@ const DEMO_DATA = (() => {
     linesRemoved: 1180,
     linesWritten: 5420,
     totalActiveMin: 863,
+    spanMin: 14 * 24 * 60,
     avgActiveMinPerDay: 72,
     activeDays: 12,
     rateLimitHits: 4,
@@ -2128,6 +2129,9 @@ const DEMO_DATA = (() => {
       lastTs: matchingSessions[matchingSessions.length - 1]?.lastTs || null,
       totalDurationMin,
       totalActiveMin,
+      spanMin: matchingSessions.length
+        ? Math.round((Math.max(...matchingSessions.map(s => Date.parse(s.lastTs))) -
+          Math.min(...matchingSessions.map(s => Date.parse(s.firstTs)))) / 60000) : 0,
       models: modelArr,
       tools: [
         { name: 'Read', calls: Math.round(messages * 1.6) },
@@ -2160,12 +2164,13 @@ const DEMO_DATA = (() => {
     const mkDaily = (n, scale, upToDay) => Array.from({ length: n }, (_, i) =>
       (upToDay !== undefined && i >= upToDay) ? { tokens: 0, tokensNoCache: 0, cost: 0, costNoCache: 0 } : mkBucket(scale * (i % 7 >= 5 ? 0.45 : 1)));
     const sumOf = (arr, msgsPerM = 2.6, actPerM = 0.55) => {
-      const s = { tokens: 0, tokensNoCache: 0, cost: 0, costNoCache: 0, messages: 0, activeMin: 0 };
+      const s = { tokens: 0, tokensNoCache: 0, cost: 0, costNoCache: 0, messages: 0, activeMin: 0, spanMin: 0 };
       for (const b of arr) { s.tokens += b.tokens; s.tokensNoCache += b.tokensNoCache; s.cost += b.cost; s.costNoCache += b.costNoCache; }
       s.cost = Math.round(s.cost * 100) / 100;
       s.costNoCache = Math.round(s.costNoCache * 100) / 100;
       s.messages = Math.round(s.tokens / 1e6 * msgsPerM);
       s.activeMin = Math.round(s.tokens / 1e6 * actPerM);
+      s.spanMin = arr.length ? Math.max(s.activeMin, (arr.length - 1) * 60) : 0;
       return s;
     };
     const h = now.getHours();

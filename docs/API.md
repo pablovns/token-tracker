@@ -39,7 +39,7 @@ endpoint's allowlist.
 
 | Route | Description |
 |---|---|
-| `/api/overview` | KPI totals: tokens by type, cost, sessions, messages, lines, `totalActiveMin`, `avgActiveMinPerDay`, `activeDays`, rate-limit hits. |
+| `/api/overview` | KPI totals: tokens by type, cost, sessions, messages, lines, `totalActiveMin` (capped active gaps on one timeline), `spanMin` (first to last message, breaks included), `avgActiveMinPerDay`, `activeDays`, rate-limit hits. |
 | `/api/providers` | Aggregated tokens, cost, messages, sessions, projects, and models broken down by provider (`claude`, `codex`, `antigravity`). |
 | `/api/daily` | Per-day aggregates including a four-part cost breakdown (`inputCost`, `outputCost`, `cacheReadCost`, `cacheCreateCost`). |
 | `/api/daily-by-model` | Daily tokens split by model. |
@@ -49,7 +49,7 @@ endpoint's allowlist.
 | `/api/hourly-by-model` | Hourly split by model. |
 | `/api/hourly-weekday` | 7 × 24 grid for the overview heatmap, with per-cell tokens/messages/cost and global maxima for colour scaling. |
 | `/api/day-of-week` | Activity by weekday. |
-| `/api/trends` | The overview trend cards and their five charts in **one** payload: four now-anchored comparisons (today, calendar week, month, rolling 7 days), each against the previous period cut off at the same point; plus `daily90` and `momentum`. Independent of the period filter. |
+| `/api/trends` | The overview trend cards and their five charts in **one** payload: four now-anchored comparisons (today, calendar week, month, rolling 7 days), each against the previous period cut off at the same point; each comparison includes `activeMin` and `spanMin`. Also includes `daily90` and `momentum`. Independent of the period filter. |
 | `/api/sessions` | Sessions with `durationMin`, `activeMin`, tokens, cost, lines, tool calls. |
 | `/api/active-sessions` | Sessions with a message in the last 10 minutes. |
 | `/api/session-depth`, `/api/session-efficiency` | Distribution and per-session efficiency metrics. |
