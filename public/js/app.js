@@ -335,6 +335,15 @@ function showDemoBanner() {
   if (settingsTabBtn) settingsTabBtn.style.display = 'none';
   // If user landed on settings tab (from localStorage), bounce them to overview
   if (state.activeTab === 'settings') state.activeTab = 'overview';
+  renderDemoHero();
+  const tourGrid = document.getElementById('demo-tour-grid');
+  if (tourGrid && !tourGrid._wired) {
+    tourGrid._wired = true;
+    tourGrid.addEventListener('click', (e) => {
+      const tile = e.target.closest('.demo-tile');
+      if (tile) _openDemoTile(tile);
+    });
+  }
   // Wire up the "Try it" CTA to scroll to the dashboard content
   const exploreCta = document.getElementById('demo-explore-cta');
   if (exploreCta && !exploreCta._wired) {
@@ -345,6 +354,119 @@ function showDemoBanner() {
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   }
+}
+
+// Fills every number on the demo hero from DEMO_DATA, so the page that
+// introduces the demo can never quote a different figure than the demo shows.
+// Called again on a language switch (the strings carry placeholders).
+function _demoFill(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+function _demoBar(id, pct) {
+  const el = document.getElementById(id);
+  if (el) el.style.width = Math.max(0, Math.min(100, pct)) + '%';
+}
+
+function renderDemoHero() {
+  if (typeof DEMO_DATA === 'undefined') return;
+  const ov = DEMO_DATA.overview || {};
+  const days = (DEMO_DATA.daily || []).length;
+  const tokens = (ov.inputTokens || 0) + (ov.outputTokens || 0) + (ov.cacheReadTokens || 0) + (ov.cacheCreateTokens || 0);
+  const fill = (key, vars) => Object.entries(vars).reduce((str, [k, v]) => str.split('{' + k + '}').join(v), t(key));
+
+  _demoFill('demo-hero-foot', fill('demoHeroFoot', { days }));
+  _demoFill('demo-l-tokens', fill('demoStatTokensLabel', { days }));
+  _demoFill('demo-v-tokens', formatTokens(tokens));
+
+  // Provider split: one segment per provider in the token card, and the
+  // share next to each provider in the list on the left.
+  const providers = ov.providers || {};
+  const split = document.getElementById('demo-bar-providers');
+  if (split) split.textContent = '';
+  for (const p of ['claude', 'codex', 'antigravity']) {
+    const pt = (providers[p] && providers[p].tokens) || 0;
+    const pct = tokens > 0 ? Math.round(pt / tokens * 100) : 0;
+    _demoFill('demo-share-' + p, fill('demoShare', { pct }));
+    if (split && pct > 0) {
+      const seg = document.createElement('span');
+      seg.className = 'demo-split-' + p;
+      seg.style.width = pct + '%';
+      split.appendChild(seg);
+    }
+  }
+
+  _demoFill('demo-v-cost', formatCost(ov.estimatedCost || 0));
+  const cachePct = tokens > 0 ? Math.round((ov.cacheReadTokens || 0) / tokens * 100) : 0;
+  _demoFill('demo-s-cost', fill('demoStatCostSub', { pct: cachePct }));
+  _demoBar('demo-bar-cache', cachePct);
+
+  _demoFill('demo-v-active', _formatActiveTime(ov.totalActiveMin || 0));
+  _demoFill('demo-s-active', fill('demoStatActiveSub', {
+    avg: _formatActiveTime(ov.avgActiveMinPerDay || 0),
+    days: ov.activeDays || 0
+  }));
+  _demoBar('demo-bar-active', days > 0 ? (ov.activeDays || 0) / days * 100 : 0);
+
+  // Usage limits: the two Claude windows and the Codex 5-hour window.
+  const lim = DEMO_DATA['usage-limits'] || {};
+  const claudeLimits = (lim.claude && lim.claude.data && lim.claude.data.limits) || [];
+  const codexLimits = (lim.codex && lim.codex.data && lim.codex.data.limits) || [];
+  const rows = [
+    ['demoLimitClaudeSession', claudeLimits.find(l => l.kind === 'session'), 'claude'],
+    ['demoLimitClaudeWeek', claudeLimits.find(l => l.kind === 'weekly_all'), 'claude'],
+    ['demoLimitCodex', codexLimits.find(l => l.windowMinutes === 300), 'codex']
+  ];
+  const box = document.getElementById('demo-limit-rows');
+  if (box) {
+    box.textContent = '';
+    for (const [key, limit, prov] of rows) {
+      if (!limit || typeof limit.percentUsed !== 'number') continue;
+      const row = document.createElement('div');
+      row.className = 'demo-limit-row';
+      const label = document.createElement('span');
+      label.className = 'demo-limit-label';
+      label.textContent = t(key);
+      const val = document.createElement('span');
+      val.className = 'demo-limit-val';
+      val.textContent = limit.percentUsed + ' %';
+      const bar = document.createElement('span');
+      bar.className = 'demo-limit-bar';
+      const fillEl = document.createElement('span');
+      fillEl.className = 'demo-split-' + prov;
+      fillEl.style.width = Math.min(100, limit.percentUsed) + '%';
+      bar.appendChild(fillEl);
+      row.append(label, val, bar);
+      box.appendChild(row);
+    }
+  }
+
+  // Achievements: the demo carries the full, real catalogue.
+  const ach = DEMO_DATA.achievements;
+  const list = Array.isArray(ach) ? ach : ((ach && ach.achievements) || []);
+  const unlocked = list.filter(a => a.unlocked).length;
+  const cats = new Set(list.map(a => a.category)).size;
+  _demoFill('demo-v-ach', formatNumber(unlocked) + ' / ' + formatNumber(list.length));
+  _demoFill('demo-s-ach', fill('demoStatAchSub', { cats }));
+  _demoBar('demo-bar-ach', list.length > 0 ? unlocked / list.length * 100 : 0);
+  _demoFill('demo-tile-ach-title', fill('demoTileAchTitle', { total: formatNumber(list.length) }));
+  _demoFill('demo-tile-ach-text', fill('demoTileAchText', { cats }));
+}
+
+// A tour tile switches to its tab and, where it names one, scrolls to the
+// section inside that tab (the limits box and the trends live on Overview).
+function _openDemoTile(tile) {
+  const tab = tile.dataset.demoTab;
+  if (!tab) return;
+  switchTab(tab);
+  const sel = tile.dataset.demoTarget;
+  requestAnimationFrame(() => {
+    const found = sel && document.querySelector(sel);
+    // A section that has not rendered yet has no box to scroll to.
+    const target = (found && found.offsetParent !== null) ? found : document.getElementById('tabs');
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 }
 
 function hideDemoBanner() {
@@ -5178,6 +5300,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       setLang(btn.dataset.lang);
+      if (state.demoMode) renderDemoHero();
       applyTooltips();
       loadTab(state.activeTab);
     });

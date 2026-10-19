@@ -187,6 +187,17 @@ const DEMO_DATA = (() => {
     };
   });
 
+  // The overview reports three providers; the models table has to show them
+  // too, otherwise the demo contradicts itself one tab later.
+  modelsData.push(
+    { model: 'gpt-5-codex', label: 'GPT-5 Codex', provider: 'codex',
+      inputTokens: 300000, outputTokens: 100000, cacheReadTokens: 760000, cacheCreateTokens: 40000,
+      inputCost: 1.25, outputCost: 2.0, cacheReadCost: 0.85, cacheCreateCost: 0.1, cost: 4.2, messages: 140 },
+    { model: 'gemini-3.8-flash', label: 'Gemini 3.8 Flash', provider: 'antigravity',
+      inputTokens: 260000, outputTokens: 90000, cacheReadTokens: 450000, cacheCreateTokens: 0,
+      inputCost: 0.78, outputCost: 1.08, cacheReadCost: 0.15, cacheCreateCost: 0, cost: 2.01, messages: 87 }
+  );
+
   // --- Tools ---
   const toolCounts = [320, 280, 245, 190, 155, 130, 85, 42, 28, 18, 12, 8];
   const totalToolCalls = toolCounts.reduce((a, b) => a + b, 0);

@@ -4,6 +4,25 @@ Alle nennenswerten Änderungen an diesem Projekt. Format lose nach
 [Keep a Changelog](https://keepachangelog.com/de/1.1.0/); Versionierung nach
 [Semantic Versioning](https://semver.org/lang/de/).
 
+## [Unreleased]
+
+### Changed
+
+- **Vorschauseite für nicht angemeldete Besucher neu.** Sie stellt jetzt alle
+  drei Provider vor (Claude Code, Codex, Antigravity) statt nur Claude, zeigt
+  Beispielwerte zu Tokens je Provider, Kosten, echter Arbeitszeit,
+  Nutzungslimits und Achievements und führt mit zwölf Kacheln direkt in den
+  passenden Bereich der Demo. Dazu kommen drei Einrichtungsschritte und ein
+  klarer Hinweis, was der Sync-Agent überträgt (nur Zählwerte, keine Prompts,
+  kein Code). Alle Zahlen kommen aus den Demo-Daten statt aus dem Markup;
+  vorher stand dort „500 Achievements“, obwohl es 1224 sind.
+- Die Demo zeigt im Modelle-Tab jetzt auch GPT-5 Codex und Gemini, passend zu
+  den drei Providern in der Übersicht.
+
+### Removed
+
+- Das Versprechen „Hell/Dunkel“: Es gibt nur ein dunkles Theme.
+
 ## [0.10.1] — 2026-10-08
 
 ### Fixed

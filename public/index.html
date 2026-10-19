@@ -377,57 +377,169 @@
   <!-- Content -->
   <main class="content">
 
-    <!-- Demo showcase hero (multi-user, not logged in) -->
-    <section class="demo-hero" id="demo-banner" style="display:none;">
+    <!-- Demo showcase hero (multi-user, not logged in).
+         Every number here is filled by renderDemoHero() from DEMO_DATA, so the
+         page can never claim a different count than the demo it introduces. -->
+    <section class="demo-hero" id="demo-banner" style="display:none;" aria-labelledby="demo-hero-title">
       <div class="demo-hero-grid">
         <div class="demo-hero-content">
           <span class="demo-hero-badge" data-i18n="demoBadge">DEMO &middot; Beispieldaten</span>
-          <h1 class="demo-hero-title" data-i18n="demoHeroTitle">Sieh deine Claude Code Nutzung &mdash; Tokens, Kosten, Sessions, Tools.</h1>
-          <p class="demo-hero-sub" data-i18n="demoHeroSub">Diese Demo zeigt 15 Tage Beispieldaten. Alle Tabs sind durchklickbar &mdash; nach dem Login siehst du deine eigenen Zahlen, live aktualisiert via Sync-Agent.</p>
-          <div class="demo-hero-features">
-            <span class="demo-feature-pill" data-i18n="demoFeatTokens">Token &amp; Kosten</span>
-            <span class="demo-feature-pill" data-i18n="demoFeatSessions">Sessions &amp; Projekte</span>
-            <span class="demo-feature-pill" data-i18n="demoFeatTools">Tools &amp; MCP-Server</span>
-            <span class="demo-feature-pill" data-i18n="demoFeatModels">Modell-Vergleich</span>
-            <span class="demo-feature-pill" data-i18n="demoFeatProductivity">Produktivit&auml;t</span>
-            <span class="demo-feature-pill" data-i18n="demoFeatAchievements">500 Achievements</span>
-            <span class="demo-feature-pill" data-i18n="demoFeatGithub">GitHub Stats</span>
-            <span class="demo-feature-pill" data-i18n="demoFeatClaudeApi">Claude API Dashboard</span>
-            <span class="demo-feature-pill" data-i18n="demoFeatRateLimits">Rate-Limit Tracking</span>
-            <span class="demo-feature-pill" data-i18n="demoFeatI18n">DE/EN, Hell/Dunkel</span>
-          </div>
+          <h1 class="demo-hero-title" id="demo-hero-title" data-i18n="demoHeroTitle">Alle deine KI-Coding-Agenten in einem Dashboard.</h1>
+          <p class="demo-hero-sub" data-i18n="demoHeroSub">Tokens, Kosten, echte Arbeitszeit und Nutzungslimits von Claude Code, Codex und Antigravity &mdash; zusammengef&uuml;hrt, ehrlich gerechnet und live.</p>
+
+          <ul class="demo-providers" aria-label="Provider">
+            <li class="demo-provider" data-provider="claude">
+              <span class="provider-dot provider-dot-claude"></span>
+              <span class="demo-provider-name">Claude Code</span>
+              <span class="demo-provider-share" id="demo-share-claude"></span>
+            </li>
+            <li class="demo-provider" data-provider="codex">
+              <span class="provider-dot provider-dot-codex"></span>
+              <span class="demo-provider-name">Codex CLI</span>
+              <span class="demo-provider-share" id="demo-share-codex"></span>
+            </li>
+            <li class="demo-provider" data-provider="antigravity">
+              <span class="provider-dot provider-dot-antigravity"></span>
+              <span class="demo-provider-name">Antigravity</span>
+              <span class="demo-provider-share" id="demo-share-antigravity"></span>
+            </li>
+          </ul>
+
           <div class="demo-hero-ctas">
             <button class="demo-hero-cta primary" id="demo-explore-cta" type="button">
               <span data-i18n="demoCtaExplore">Demo durchklicken</span>
-              <span class="demo-cta-arrow">&darr;</span>
+              <span class="demo-cta-arrow" aria-hidden="true">&darr;</span>
             </button>
             <a class="demo-hero-cta secondary" href="/auth/github">
-              <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
               <span data-i18n="demoCtaSignIn">Mit GitHub anmelden</span>
             </a>
           </div>
-          <p class="demo-hero-foot" data-i18n="demoHeroFoot">Open Source &middot; Single- &amp; Multi-User &middot; Self-Hostable</p>
+          <p class="demo-hero-foot" id="demo-hero-foot"></p>
         </div>
-        <div class="demo-hero-visual" aria-hidden="true">
+
+        <div class="demo-hero-visual" aria-label="Beispielwerte" id="demo-hero-visual">
           <div class="demo-stat-card demo-stat-card-1">
-            <div class="demo-stat-label" data-i18n="demoStatTokensLabel">Tokens (15 Tage)</div>
-            <div class="demo-stat-val">7.0M</div>
-            <div class="demo-stat-bar"><span style="width:72%"></span></div>
-            <div class="demo-stat-sub" data-i18n="demoStatTokensSub">Mit Cache-Aufschl&uuml;sselung</div>
+            <div class="demo-stat-label" id="demo-l-tokens"></div>
+            <div class="demo-stat-val" id="demo-v-tokens">-</div>
+            <div class="demo-stat-bar demo-stat-split" id="demo-bar-providers"></div>
+            <div class="demo-stat-sub" data-i18n="demoStatTokensSub">Aufgeteilt nach Provider</div>
           </div>
           <div class="demo-stat-card demo-stat-card-2">
             <div class="demo-stat-label" data-i18n="demoStatCostLabel">Gesch&auml;tzte Kosten</div>
-            <div class="demo-stat-val">$22.71</div>
-            <div class="demo-stat-bar"><span style="width:45%"></span></div>
-            <div class="demo-stat-sub" data-i18n="demoStatCostSub">Modell-Mix &amp; Cache-Savings</div>
+            <div class="demo-stat-val" id="demo-v-cost">-</div>
+            <div class="demo-stat-bar"><span id="demo-bar-cache"></span></div>
+            <div class="demo-stat-sub" id="demo-s-cost"></div>
           </div>
           <div class="demo-stat-card demo-stat-card-3">
-            <div class="demo-stat-label" data-i18n="demoStatActiveLabel">Aktive Arbeitszeit</div>
-            <div class="demo-stat-val">14h 23m</div>
-            <div class="demo-stat-bar"><span style="width:58%"></span></div>
-            <div class="demo-stat-sub" data-i18n="demoStatActiveSub">&Oslash; 72 Min./Tag (12 aktive Tage)</div>
+            <div class="demo-stat-label" data-i18n="demoStatActiveLabel">Echte Arbeitszeit</div>
+            <div class="demo-stat-val" id="demo-v-active">-</div>
+            <div class="demo-stat-bar"><span id="demo-bar-active"></span></div>
+            <div class="demo-stat-sub" id="demo-s-active"></div>
+          </div>
+          <div class="demo-stat-card demo-stat-card-4">
+            <div class="demo-stat-label" data-i18n="demoStatLimitsLabel">Nutzungslimits</div>
+            <div class="demo-limit-rows" id="demo-limit-rows"></div>
+          </div>
+          <div class="demo-stat-card demo-stat-card-5">
+            <div class="demo-stat-label" data-i18n="demoStatAchLabel">Achievements</div>
+            <div class="demo-stat-val" id="demo-v-ach">-</div>
+            <div class="demo-stat-bar"><span id="demo-bar-ach"></span></div>
+            <div class="demo-stat-sub" id="demo-s-ach"></div>
           </div>
         </div>
+      </div>
+
+      <div class="demo-tour">
+        <h2 class="demo-section-title" data-i18n="demoTourTitle">Was dich erwartet</h2>
+        <p class="demo-section-sub" data-i18n="demoTourSub">Jede Kachel &ouml;ffnet den passenden Bereich der Demo.</p>
+        <div class="demo-tour-grid" id="demo-tour-grid">
+          <button type="button" class="demo-tile" data-demo-tab="overview" data-demo-target="#tab-overview .kpi-grid" style="--tile:var(--green)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            <span class="demo-tile-title" data-i18n="demoTileCostTitle">Kosten, wie sie anfallen</span>
+            <span class="demo-tile-text" data-i18n="demoTileCostText">Preise t&auml;glich aktuell, Cache-Schreibstufen getrennt bepreist, alte Nachrichten behalten ihren damaligen Preis.</span>
+          </button>
+          <button type="button" class="demo-tile" data-demo-tab="overview" data-demo-target="#plan-usage-section" style="--tile:var(--orange)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 13l4-4M3.5 17a9 9 0 1117 0"/><circle cx="12" cy="13" r="1.5"/></svg>
+            <span class="demo-tile-title" data-i18n="demoTileLimitsTitle">Limits mit Prognose</span>
+            <span class="demo-tile-text" data-i18n="demoTileLimitsText">Session- und Wochenlimits von Claude, Codex-Fenster und Antigravity-Sperren &mdash; mit Vorhersage, wann es knapp wird.</span>
+          </button>
+          <button type="button" class="demo-tile" data-demo-tab="overview" data-demo-target="#trend-section" style="--tile:var(--accent)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>
+            <span class="demo-tile-title" data-i18n="demoTileTrendsTitle">Trends &amp; Heatmap</span>
+            <span class="demo-tile-text" data-i18n="demoTileTrendsText">Heute gegen gestern zur selben Uhrzeit, 90-Tage-Verlauf, Monatsprognose und Wochentag &times; Stunde.</span>
+          </button>
+          <button type="button" class="demo-tile" data-demo-tab="sessions" style="--tile:var(--purple)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            <span class="demo-tile-title" data-i18n="demoTileTimeTitle">Echte Arbeitszeit</span>
+            <span class="demo-tile-text" data-i18n="demoTileTimeText">Pausen &uuml;ber 5 Minuten z&auml;hlen nicht mit &mdash; offene Tabs und parallele Sessions bl&auml;hen nichts auf.</span>
+          </button>
+          <button type="button" class="demo-tile" data-demo-tab="projects" style="--tile:var(--cyan)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+            <span class="demo-tile-title" data-i18n="demoTileProjectsTitle">Projekte</span>
+            <span class="demo-tile-text" data-i18n="demoTileProjectsText">Kosten je Projekt, umbenannte Ordner zusammenf&uuml;hren, druckfertiger Projektbericht als PDF.</span>
+          </button>
+          <button type="button" class="demo-tile" data-demo-tab="tools" style="--tile:var(--orange)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 005.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>
+            <span class="demo-tile-title" data-i18n="demoTileToolsTitle">Tools, MCP &amp; Sub-Agents</span>
+            <span class="demo-tile-text" data-i18n="demoTileToolsText">Welches Tool wie oft l&auml;uft und was es kostet, MCP-Server und Sub-Agents automatisch erkannt.</span>
+          </button>
+          <button type="button" class="demo-tile" data-demo-tab="models" style="--tile:var(--accent)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h6v6H9z"/></svg>
+            <span class="demo-tile-title" data-i18n="demoTileModelsTitle">Modelle im Vergleich</span>
+            <span class="demo-tile-text" data-i18n="demoTileModelsText">Opus, Sonnet, Haiku, GPT und Gemini nebeneinander &mdash; Anteil, Kosten und Effizienz.</span>
+          </button>
+          <button type="button" class="demo-tile" data-demo-tab="productivity" style="--tile:var(--green)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+            <span class="demo-tile-title" data-i18n="demoTileProdTitle">Produktivit&auml;t</span>
+            <span class="demo-tile-text" data-i18n="demoTileProdText">Geschriebene und ge&auml;nderte Zeilen, Kosten je Zeile, Zeitr&auml;ume im direkten Vergleich.</span>
+          </button>
+          <button type="button" class="demo-tile" data-demo-tab="achievements" style="--tile:var(--purple)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0zM7 6H4v1a3 3 0 003 3M17 6h3v1a3 3 0 01-3 3"/></svg>
+            <span class="demo-tile-title" id="demo-tile-ach-title"></span>
+            <span class="demo-tile-text" id="demo-tile-ach-text"></span>
+          </button>
+          <button type="button" class="demo-tile" data-demo-tab="github" style="--tile:var(--text-muted)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="9" r="2"/><path d="M6 8v8M18 11c0 4-6 3-12 5"/></svg>
+            <span class="demo-tile-title" data-i18n="demoTileGithubTitle">GitHub</span>
+            <span class="demo-tile-text" data-i18n="demoTileGithubText">Contributions, Pull Requests, Sprachen und Actions-Minuten je Repository.</span>
+          </button>
+          <button type="button" class="demo-tile" data-demo-tab="claude-api" style="--tile:var(--orange)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 7a3 3 0 11-3 3M12 10l-8 8 2 2 2-2 2 2 2-2-2-2 2-2"/></svg>
+            <span class="demo-tile-title" data-i18n="demoTileApiTitle">Claude API</span>
+            <span class="demo-tile-text" data-i18n="demoTileApiText">Kosten der Organisation je API-Key und Modell, mit Monatsbudget.</span>
+          </button>
+          <button type="button" class="demo-tile" data-demo-tab="insights" style="--tile:var(--cyan)">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0012 3z"/></svg>
+            <span class="demo-tile-title" data-i18n="demoTileInsightsTitle">Insights</span>
+            <span class="demo-tile-text" data-i18n="demoTileInsightsText">Cache-Effizienz, Abbruchgr&uuml;nde, Session-Tiefe und Rate-Limit-Treffer im Zeitverlauf.</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="demo-steps-wrap">
+        <h2 class="demo-section-title" data-i18n="demoStepsTitle">In drei Schritten zu deinen Zahlen</h2>
+        <ol class="demo-steps">
+          <li class="demo-step">
+            <span class="demo-step-num" aria-hidden="true">1</span>
+            <span class="demo-step-title" data-i18n="demoStep1Title">Mit GitHub anmelden</span>
+            <span class="demo-step-text" data-i18n="demoStep1Text">Kein Passwort, kein eigenes Konto &mdash; ein Klick.</span>
+          </li>
+          <li class="demo-step">
+            <span class="demo-step-num" aria-hidden="true">2</span>
+            <span class="demo-step-title" data-i18n="demoStep2Title">Sync-Agent installieren</span>
+            <span class="demo-step-text" data-i18n="demoStep2Text">Ein Befehl je Ger&auml;t, f&uuml;r macOS, Linux und Windows. Er liest die lokalen Logs von Claude Code, Codex und Antigravity.</span>
+          </li>
+          <li class="demo-step">
+            <span class="demo-step-num" aria-hidden="true">3</span>
+            <span class="demo-step-title" data-i18n="demoStep3Title">Live mitverfolgen</span>
+            <span class="demo-step-text" data-i18n="demoStep3Text">Neue Nachrichten erscheinen nach Sekunden. Mehrere Ger&auml;te einzeln oder zusammen ansehen.</span>
+          </li>
+        </ol>
+        <p class="demo-privacy">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          <span data-i18n="demoPrivacy">&Uuml;bertragen werden nur Z&auml;hlwerte: Tokens, Modell, Zeitstempel, Projekt- und Tool-Namen, Zeilenzahlen. Keine Prompts, keine Antworten, kein Code.</span>
+        </p>
       </div>
     </section>
 
